@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Our Branch Locations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EEF2F5; --ink:#10243B; --muted:#5B6B7C; --card:#FFFFFF;
+    --accent:#0E7C86; --accent-ink:#FFFFFF; --line:#D5DEE6;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{ --bg:#0C1824; --ink:#EAF1F6; --muted:#9FB0C0; --card:#142536; --accent:#37B6C1; --accent-ink:#08202A; --line:#26394C; }
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    font-family:"Cairo",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
+    background:var(--bg); color:var(--ink); min-height:100vh;
+    padding:max(20px,env(safe-area-inset-top)) 18px max(28px,env(safe-area-inset-bottom));
+  }
+  .wrap{max-width:560px;margin:0 auto}
+  header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:28px}
+  .brand{font-weight:800;font-size:1.05rem}
+  .brand img{height:36px;display:block}
+  .lang{
+    font:inherit;font-weight:600;font-size:.9rem;color:var(--ink);background:transparent;
+    border:1.5px solid var(--line);border-radius:999px;padding:6px 16px;cursor:pointer;
+  }
+  h1{font-size:clamp(1.9rem,7vw,2.6rem);line-height:1.15;margin:0 0 8px;font-weight:800}
+  .sub{color:var(--muted);margin:0 0 28px;font-size:1.05rem}
+  .branch{
+    background:var(--card);border:1.5px solid var(--line);border-radius:18px;
+    padding:20px;margin-bottom:16px;
+  }
+  .branch h2{margin:0 0 4px;font-size:1.35rem;font-weight:800}
+  .meta{margin:0;color:var(--muted);font-size:.98rem;line-height:1.6}
+  .meta a{color:inherit}
+  .actions{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    font:inherit;font-weight:800;font-size:1rem;text-decoration:none;
+    padding:13px 20px;border-radius:12px;min-height:48px;flex:1 1 auto;
+  }
+  .btn.primary{background:var(--accent);color:var(--accent-ink)}
+  .btn.ghost{border:1.5px solid var(--line);color:var(--ink)}
+  .btn:focus-visible,.lang:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+  footer{margin-top:24px;text-align:center;color:var(--muted);font-size:.85rem}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand" id="brand"></div>
+    <!-- <button class="lang" id="langBtn" type="button"></button> -->
+  </header>
+  <h1 id="title"></h1>
+  <p class="sub" id="subtitle"></p>
+  <main id="list"></main>
+  <footer id="foot"></footer>
+</div>
+
+<script>
+/* =====================================================================
+   EDIT ONLY THIS BLOCK TO CHANGE CONTENT.
+   - To add a branch: copy one { ... } block inside BRANCHES and edit it.
+   - To remove a branch: delete its { ... } block.
+   - Leave address / phone / hours as "" to hide that line.
+   - Use full Google Maps links (https://maps.app.goo.gl/... or https://www.google.com/maps/...)
+   ===================================================================== */
+const CONFIG = {
+  companyName: { en: "Nations Of Sky", ar: "Nations Of Sky" },
+  logoUrl: "nationslogo.png",   // optional: e.g. "nationslogo.png" (upload the file next to index.html)
+  title:    { en: "Our branch locations", ar: "فروعنا" },
+  subtitle: { en: "Choose your nearest branch to get directions.", ar: "اختر أقرب فرع لك للحصول على الاتجاهات." },
+  openMaps: { en: "Open in Maps", ar: "افتح في الخريطة" },
+  call:     { en: "Call", ar: "اتصل" },
+  footer:   { en: "", ar: "" },
+
+  BRANCHES: [
+    {
+      name:    { en: "Sky Ridge Executives Location", ar: "" },
+      address: { en: "Branch 1 address", ar: "عنوان الفرع الأول" },
+      hours:   { en: "Sun–Thu, 9:00 AM – 5:00 PM", ar: "الأحد–الخميس، 9 ص – 5 م" },
+      phone:   "",
+      mapUrl:  "https://maps.app.goo.gl/eekVZfKn9U7LxFvQ9?g_st=iw"
+    },
+    {
+      name:    { en: "Walk of Cairo branch", ar: "اسم الفرع الثاني" },
+      address: { en: "Branch 2 address", ar: "عنوان الفرع الثاني" },
+      hours:   { en: "Sun–Thu, 9:00 AM – 5:00 PM", ar: "الأحد–الخميس، 9 ص – 5 م" },
+      phone:   "",
+      mapUrl:  "https://maps.app.goo.gl/bHaoyDt6Vrg16bGj7?g_st=iw"
+    }
+  ]
+};
+/* ===================== END OF EDITABLE BLOCK ===================== */
+
+let lang = "en";
+<!-- try { lang = localStorage.getItem("lang") || ((navigator.language||"").startsWith("ar") ? "ar" : "en"); } catch(e){} -->
+
+const $ = id => document.getElementById(id);
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+
+function render(){
+  const t = k => CONFIG[k][lang];
+  document.documentElement.lang = lang;
+  document.documentElement.dir  = lang === "ar" ? "rtl" : "ltr";
+  document.title = t("title");
+  $("langBtn").textContent = lang === "ar" ? "English" : "العربية";
+  $("brand").innerHTML = CONFIG.logoUrl
+    ? '<img src="' + esc(CONFIG.logoUrl) + '" alt="' + esc(t("companyName")) + '">'
+    : esc(t("companyName"));
+  $("title").textContent = t("title");
+  $("subtitle").textContent = t("subtitle");
+  $("foot").textContent = t("footer");
+
+  $("list").innerHTML = CONFIG.BRANCHES.map(b => {
+    const lines = [b.address && b.address[lang], b.hours && b.hours[lang]].filter(Boolean)
+      .map(x => "<div>" + esc(x) + "</div>").join("");
+    const phone = b.phone ? '<div><a href="tel:' + esc(b.phone) + '" dir="ltr">' + esc(b.phone) + '</a></div>' : "";
+    const call = b.phone ? '<a class="btn ghost" href="tel:' + esc(b.phone) + '">' + esc(t("call")) + '</a>' : "";
+    return '<section class="branch">' +
+      '<h2>' + esc(b.name[lang]) + '</h2>' +
+      '<p class="meta">' + lines + phone + '</p>' +
+      '<div class="actions">' +
+        '<a class="btn primary" href="' + esc(b.mapUrl) + '" target="_blank" rel="noopener">' + esc(t("openMaps")) + '</a>' +
+        call +
+      '</div></section>';
+  }).join("");
+}
+
+$("langBtn").addEventListener("click", () => {
+  lang = lang === "ar" ? "en" : "ar";
+  try { localStorage.setItem("lang", lang); } catch(e){}
+  render();
+});
+render();
+</script>
+</body>
+</html>
