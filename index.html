@@ -110,7 +110,7 @@ function render(){
   document.documentElement.lang = lang;
   document.documentElement.dir  = lang === "ar" ? "rtl" : "ltr";
   document.title = t("title");
-  $("langBtn").textContent = lang === "ar" ? "English" : "العربية";
+  <!-- $("langBtn").textContent = lang === "ar" ? "English" : "العربية"; -->
   $("brand").innerHTML = CONFIG.logoUrl
     ? '<img src="' + esc(CONFIG.logoUrl) + '" alt="' + esc(t("companyName")) + '">'
     : esc(t("companyName"));
@@ -133,11 +133,11 @@ function render(){
   }).join("");
 }
 
-$("langBtn").addEventListener("click", () => {
-  lang = lang === "ar" ? "en" : "ar";
-  try { localStorage.setItem("lang", lang); } catch(e){}
-  render();
-});
+<!-- $("langBtn").addEventListener("click", () => { -->
+  <!-- lang = lang === "ar" ? "en" : "ar"; -->
+  <!-- try { localStorage.setItem("lang", lang); } catch(e){} -->
+  <!-- render(); -->
+<!-- }); -->
 render();
 </script>
 </body>
